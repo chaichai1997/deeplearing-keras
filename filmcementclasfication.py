@@ -2,6 +2,12 @@
 from keras.datasets import imdb
 
 """
+    电影影评分类，根据电影影评的文字将其分为正面与负面
+    数据集:imdb,数据集为单词索引组成的列表，将其转换为矩阵并进行归一化
+    网络模型：16全连接+16全连接+1 sigmoid
+    数据集规模：训练15000*1000；交叉验证10000*1000；测试集250000
+"""
+"""
     加载imdb数据集，仅保留前1000个最常出现的单词
 """
 (train_data, train_labels), (test_data, test_labels) = \
