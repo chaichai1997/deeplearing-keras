@@ -24,8 +24,8 @@ x = np.array([
 print(x, x.ndim)
 
 (train_images, train_labels), (test_images, test_labels) = \
-    mnist.load_data(path="E:/deep learning/code/kreastest/mnist.npz")
-print(train_images.ndim, train_images.shape, train_images.dtype)
+    mnist.load_data()
+print(train_images.ndim, train_imagesd.shape, train_images.dtype)
 
 """
     显示第4个数字

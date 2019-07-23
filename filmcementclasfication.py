@@ -9,9 +9,10 @@ from keras.datasets import imdb
 """
 """
     加载imdb数据集，仅保留前1000个最常出现的单词
+    path: c:/Users/chaichai/.keras/datasets
 """
 (train_data, train_labels), (test_data, test_labels) = \
-    imdb.load_data("E:/deep learning/code/kreastest/imdb.npz", num_words=10000)
+    imdb.load_data(num_words=10000)
 
 # print(train_data)
 # print(train_labels[0])

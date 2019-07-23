@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 """
 
 (train_data, train_labels), (test_data, test_labels) = \
-    reuters.load_data('E:/deep learning/code/kreastest/reuters.npz', num_words=10000)
+    reuters.load_data(num_words=10000)
 
 
 # 训练数据标签化
