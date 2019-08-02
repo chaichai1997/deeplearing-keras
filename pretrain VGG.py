@@ -8,6 +8,7 @@ from keras import models
 from keras import layers
 from keras import optimizers
 import matplotlib.pyplot as plt
+
 """
 在小数据集上使用预训练的神经网络，使用VGG16
 _________________________________________________________________
@@ -76,11 +77,13 @@ conv_base = VGG16(
 快速特征提取
 在自己的数据集上运行卷积基，将输出保存为硬盘中的numpy数组，然后用数组作为输入，输入到独立的密集连接分类器中。
 """
-base_dir = 'E:/deep learning/code/kreastest/cat-data'
-train_dir = os.path.join(base_dir, 'train')
-validation_dir = os.path.join(base_dir, 'validation')
-test_dir = os.path.join(base_dir, 'test')
-datagen = ImageDataGenerator(rescale=1./255)
+# base_dir = 'E:\\deep learning\\code\\kreastest\\cat-data'
+train_dir = 'F:/deep learning/code/kreastest/cat-data/train'
+validation_dir = 'F:/deep learning/code/kreastest/cat-data/validation'
+test_dir = 'F:/deep learning/code/kreastest/cat-data/test'
+# validation_dir = os.path.join(base_dir, 'validation')
+# test_dir = os.path.join(base_dir, 'test')
+datagen = ImageDataGenerator(rescale=1. / 255)
 batch_size = 20
 
 
@@ -96,18 +99,18 @@ def extract_features(directory, sample_count):
     i = 0
     for inputs_batch, labels_batch in generators:
         features_batch = conv_base.predict(inputs_batch)
-        features[i * batch_size:(i + 1)*batch_size] = features_batch
-        labels[i * batch_size:(i + 1)*batch_size] = labels_batch
+        features[i * batch_size:(i + 1) * batch_size] = features_batch
+        labels[i * batch_size:(i + 1) * batch_size] = labels_batch
         i += 1
         if i * batch_size >= sample_count:
-            break   # 读取所有数据后终止循环
+            break  # 读取所有数据后终止循环
     return features, labels
 
 
 # 最后输出特征图的形状为(4, 4, 512)
 train_features, train_labels = extract_features(train_dir, 2000)
-validation_features, validation_labels = extract_features(validation_dir,  1000)
-test_features, test_labels  = extract_features(test_dir, 1000)
+validation_features, validation_labels = extract_features(validation_dir, 1000)
+test_features, test_labels = extract_features(test_dir, 1000)
 train_features = np.reshape(train_features, (2000, 4 * 4 * 512))
 validation_features = np.reshape(validation_features, (1000, 4 * 4 * 512))
 test_features = np.reshape(test_features, (1000, 4 * 4 * 512))
@@ -135,7 +138,7 @@ acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
-epochs = range(1, len(acc)+1)
+epochs = range(1, len(acc) + 1)
 plt.plot(epochs, acc, 'bo', label='Training acc')
 plt.plot(epochs, val_acc, 'b', label='Validation acc')
 plt.title('Training and validation acc')
@@ -146,7 +149,3 @@ plt.plot(epochs, val_loss, 'b', label='Validation loss')
 plt.title('Training and validation loss')
 plt.legend()
 plt.show()
-
-
-
-

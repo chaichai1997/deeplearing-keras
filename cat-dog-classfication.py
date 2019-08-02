@@ -71,6 +71,16 @@ validation_generator = test_datagen.flow_from_directory(
     batch_size=20,
     class_mode='binary'
 )
+# 数据增强
+datagen = ImageDataGenerator(
+    rotation_range=40,  # 旋转
+    width_shift_range=0.2, 
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
 # 拟合模型
 history = model.fit_generator(
     train_generator,
@@ -79,6 +89,7 @@ history = model.fit_generator(
     validation_data=validation_generator,
     validation_steps=50
 )
+
 # 保存模型
 model.save('cat_dog_small_1.h5')
 # 绘制损失与精度曲线
