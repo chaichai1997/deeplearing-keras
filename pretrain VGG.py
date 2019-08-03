@@ -121,7 +121,7 @@ model.add(layers.Dense(256, activation='relu', input_dim=4 * 4 * 512))
 model.add(layers.Dropout(0.5))
 model.add(layers.Dense(1, activation='sigmoid'))
 model.compile(
-    optimizer=optimizers.RMSprop(le=2e-5),
+    optimizer=optimizers.RMSprop(lr=2e-5),
     loss='binary_crossentropy',
     metrics=['acc']
 )

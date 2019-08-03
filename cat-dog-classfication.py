@@ -46,6 +46,7 @@ model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(128, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Flatten())
+model.add(layers.Dropout(0.5))
 model.add(layers.Dense(512, activation='relu'))
 model.add(layers.Dense(1, activation='sigmoid'))
 # 优化器配置
@@ -54,33 +55,51 @@ model.compile(
     optimizer=optimizers.RMSprop(lr=1e-4),
     metrics=['acc']
 )
+# # 从目录中读取图像
+# train_datagen = ImageDataGenerator(rescale=1./255)
+# test_datagen = ImageDataGenerator(rescale=1./255)
+# train_dir = 'F:/deep learning/code/kreastest/cat-data/train'
+# validation_dir = 'F:/deep learning/code/kreastest/cat-data/validation'
+# train_generator = train_datagen.flow_from_directory(
+#     train_dir,
+#     target_size=(150, 150),
+#     batch_size=20,
+#     class_mode='binary'
+# )
+# validation_generator = test_datagen.flow_from_directory(
+#     validation_dir,
+#     target_size=(150, 150),
+#     batch_size=20,
+#     class_mode='binary'
+# )
+# 数据增强
+trian_datagen = ImageDataGenerator(
+    rotation_range=40,  # 旋转
+    width_shift_range=0.2,  # 水平竖直方向平移的范围
+    height_shift_range=0.2,
+    shear_range=0.2,   # 随机错切变换的角度
+    zoom_range=0.2,    # 随机缩放的角度
+    horizontal_flip=True,  # 图像水平翻转
+    fill_mode='nearest'    # 填充新像素
+)
+# 利用增强数据训练
 # 从目录中读取图像
-train_datagen = ImageDataGenerator(rescale=1./255)
 test_datagen = ImageDataGenerator(rescale=1./255)
 train_dir = 'F:/deep learning/code/kreastest/cat-data/train'
 validation_dir = 'F:/deep learning/code/kreastest/cat-data/validation'
-train_generator = train_datagen.flow_from_directory(
+train_generator = trian_datagen.flow_from_directory(
     train_dir,
     target_size=(150, 150),
-    batch_size=20,
+    batch_size=32,
     class_mode='binary'
 )
 validation_generator = test_datagen.flow_from_directory(
     validation_dir,
     target_size=(150, 150),
-    batch_size=20,
+    batch_size=32,
     class_mode='binary'
 )
-# 数据增强
-datagen = ImageDataGenerator(
-    rotation_range=40,  # 旋转
-    width_shift_range=0.2, 
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    fill_mode='nearest'
-)
+
 # 拟合模型
 history = model.fit_generator(
     train_generator,
