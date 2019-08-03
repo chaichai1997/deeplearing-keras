@@ -74,13 +74,13 @@ model.compile(
 # )
 # 数据增强
 trian_datagen = ImageDataGenerator(
+    rescale=1./255,
     rotation_range=40,  # 旋转
     width_shift_range=0.2,  # 水平竖直方向平移的范围
     height_shift_range=0.2,
     shear_range=0.2,   # 随机错切变换的角度
     zoom_range=0.2,    # 随机缩放的角度
     horizontal_flip=True,  # 图像水平翻转
-    fill_mode='nearest'    # 填充新像素
 )
 # 利用增强数据训练
 # 从目录中读取图像
@@ -104,13 +104,13 @@ validation_generator = test_datagen.flow_from_directory(
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=100,
-    epochs=30,
+    epochs=50,
     validation_data=validation_generator,
     validation_steps=50
 )
 
 # 保存模型
-model.save('cat_dog_small_1.h5')
+model.save('cat_dog_small_2.h5')
 # 绘制损失与精度曲线
 acc = history.history['acc']
 val_acc = history.history['val_acc']

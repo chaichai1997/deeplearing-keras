@@ -73,67 +73,133 @@ conv_base = VGG16(
     include_top=False,
     input_shape=(150, 150, 3)
 )
+# """
+# 方法一：快速特征提取
+# 在自己的数据集上运行卷积基，将输出保存为硬盘中的numpy数组，然后用数组作为输入，输入到独立的密集连接分类器中。
+# """
+# # base_dir = 'E:\\deep learning\\code\\kreastest\\cat-data'
+# train_dir = 'F:/deep learning/code/kreastest/cat-data/train'
+# validation_dir = 'F:/deep learning/code/kreastest/cat-data/validation'
+# test_dir = 'F:/deep learning/code/kreastest/cat-data/test'
+# # validation_dir = os.path.join(base_dir, 'validation')
+# # test_dir = os.path.join(base_dir, 'test')
+# datagen = ImageDataGenerator(rescale=1. / 255)
+# batch_size = 20
+#
+#
+# def extract_features(directory, sample_count):
+#     features = np.zeros(shape=(sample_count, 4, 4, 512))
+#     labels = np.zeros(shape=(sample_count))
+#     generators = datagen.flow_from_directory(
+#         directory,
+#         target_size=(150, 150),
+#         batch_size=batch_size,
+#         class_mode='binary'
+#     )
+#     i = 0
+#     for inputs_batch, labels_batch in generators:
+#         features_batch = conv_base.predict(inputs_batch)
+#         features[i * batch_size:(i + 1) * batch_size] = features_batch
+#         labels[i * batch_size:(i + 1) * batch_size] = labels_batch
+#         i += 1
+#         if i * batch_size >= sample_count:
+#             break  # 读取所有数据后终止循环
+#     return features, labels
+#
+#
+# # 最后输出特征图的形状为(4, 4, 512)
+# train_features, train_labels = extract_features(train_dir, 2000)
+# validation_features, validation_labels = extract_features(validation_dir, 1000)
+# test_features, test_labels = extract_features(test_dir, 1000)
+# train_features = np.reshape(train_features, (2000, 4 * 4 * 512))
+# validation_features = np.reshape(validation_features, (1000, 4 * 4 * 512))
+# test_features = np.reshape(test_features, (1000, 4 * 4 * 512))
+#
+# # 定义并训练密集连接分类器
+# model = models.Sequential()
+# model.add(layers.Dense(256, activation='relu', input_dim=4 * 4 * 512))
+# model.add(layers.Dropout(0.5))
+# model.add(layers.Dense(1, activation='sigmoid'))
+# model.compile(
+#     optimizer=optimizers.RMSprop(lr=2e-5),
+#     loss='binary_crossentropy',
+#     metrics=['acc']
+# )
+# history = model.fit(
+#     train_features,
+#     train_labels,
+#     epochs=30,
+#     batch_size=20,
+#     validation_data=(validation_features, validation_labels)
+# )
 """
-快速特征提取
-在自己的数据集上运行卷积基，将输出保存为硬盘中的numpy数组，然后用数组作为输入，输入到独立的密集连接分类器中。
+方法2 使用数据增强的特征提取
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+vgg16 (Model)                (None, 4, 4, 512)         14714688  
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 8192)              0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 256)               2097408   
+_________________________________________________________________
+dense_2 (Dense)              (None, 1)                 257       
+=================================================================
+Total params: 16,812,353
+Trainable params: 16,812,353
+Non-trainable params: 0
+_________________________________________________________________
+None
+冻结卷积基：即一个或多个层在训练过程中保存其权重不变，方法是将其trainable属性设置为false
 """
-# base_dir = 'E:\\deep learning\\code\\kreastest\\cat-data'
+model = models.Sequential()
+model.add(conv_base)
+model.add(layers.Flatten())
+model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+print(model.summary())
+# 利用冻结卷积端到端的训练模型
+conv_base.trainable = False
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+test_datagen = ImageDataGenerator(rescale=1./255)
 train_dir = 'F:/deep learning/code/kreastest/cat-data/train'
 validation_dir = 'F:/deep learning/code/kreastest/cat-data/validation'
 test_dir = 'F:/deep learning/code/kreastest/cat-data/test'
-# validation_dir = os.path.join(base_dir, 'validation')
-# test_dir = os.path.join(base_dir, 'test')
-datagen = ImageDataGenerator(rescale=1. / 255)
-batch_size = 20
-
-
-def extract_features(directory, sample_count):
-    features = np.zeros(shape=(sample_count, 4, 4, 512))
-    labels = np.zeros(shape=(sample_count))
-    generators = datagen.flow_from_directory(
-        directory,
-        target_size=(150, 150),
-        batch_size=batch_size,
-        class_mode='binary'
-    )
-    i = 0
-    for inputs_batch, labels_batch in generators:
-        features_batch = conv_base.predict(inputs_batch)
-        features[i * batch_size:(i + 1) * batch_size] = features_batch
-        labels[i * batch_size:(i + 1) * batch_size] = labels_batch
-        i += 1
-        if i * batch_size >= sample_count:
-            break  # 读取所有数据后终止循环
-    return features, labels
-
-
-# 最后输出特征图的形状为(4, 4, 512)
-train_features, train_labels = extract_features(train_dir, 2000)
-validation_features, validation_labels = extract_features(validation_dir, 1000)
-test_features, test_labels = extract_features(test_dir, 1000)
-train_features = np.reshape(train_features, (2000, 4 * 4 * 512))
-validation_features = np.reshape(validation_features, (1000, 4 * 4 * 512))
-test_features = np.reshape(test_features, (1000, 4 * 4 * 512))
-
-# 定义并训练密集连接分类器
-model = models.Sequential()
-model.add(layers.Dense(256, activation='relu', input_dim=4 * 4 * 512))
-model.add(layers.Dropout(0.5))
-model.add(layers.Dense(1, activation='sigmoid'))
+train_generator = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(150, 150),
+    batch_size=20,
+    class_mode='binary'
+)
+validation_generator = test_datagen.flow_from_directory(
+    validation_dir,
+    target_size=(150, 150),
+    batch_size=20,
+    class_mode='binary'
+)
 model.compile(
-    optimizer=optimizers.RMSprop(lr=2e-5),
     loss='binary_crossentropy',
+    optimizer=optimizers.RMSprop(lr=2e-5),
     metrics=['acc']
 )
-history = model.fit(
-    train_features,
-    train_labels,
+history = model.fit_generator(
+    train_generator,
+    steps_per_epoch=100,
     epochs=30,
-    batch_size=20,
-    validation_data=(validation_features, validation_labels)
+    validation_data=validation_generator,
+    validation_steps=50
 )
 
-# 绘制结果
+"""绘制结果 """
 acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
