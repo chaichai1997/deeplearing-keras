@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # author = "chaichai"
 from keras.models import Sequential
-from keras.layers import Embedding, SimpleRNN, Dense
+from keras.layers import Embedding, SimpleRNN, Dense, LSTM
 from keras.datasets import imdb
 from keras.preprocessing import sequence
 import matplotlib.pyplot as plt
@@ -39,15 +39,33 @@ input_test = sequence.pad_sequences(input_test, maxlen=maxlen)
 # print('input_train shape:', input_train.shape)
 # print('input_test shape:', input_test.shape)
 
-# 用Embedding和simpleRNN来训练模型
+# # 用Embedding和simpleRNN来训练模型
+# model = Sequential()
+# model.add(Embedding(max_feature, 32))
+# model.add(SimpleRNN(32))
+# model.add(Dense(1, activation='sigmoid'))
+#
+# model.compile(
+#     optimizer='rmsprop',
+#     loss='binary_crossentropy',
+#     metrics=['acc']
+# )
+# history = model.fit(
+#     input_train,
+#     y_train,
+#     epochs=10,
+#     batch_size=128,
+#     validation_split=0.2
+# )
+
+# keras中的LSTM
 model = Sequential()
 model.add(Embedding(max_feature, 32))
-model.add(SimpleRNN(32))
+model.add(LSTM(32))
 model.add(Dense(1, activation='sigmoid'))
-
 model.compile(
     optimizer='rmsprop',
-    loss='binary_crossentropy',
+    loss = 'binary_crossentropy',
     metrics=['acc']
 )
 history = model.fit(
@@ -57,7 +75,6 @@ history = model.fit(
     batch_size=128,
     validation_split=0.2
 )
-
 # 绘制结果
 acc = history.history['acc']
 val_acc = history.history['val_acc']
