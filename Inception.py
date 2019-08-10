@@ -2,6 +2,7 @@
 # author = "chaichai"
 from keras import layers
 import numpy as np
+from keras.applications import inception_v3
 
 x = np.random.randint(128, 3, 3, 3)
 
