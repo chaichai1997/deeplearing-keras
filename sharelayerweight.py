@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # author = "chaichai"
 """
-实现共享层权重，每次调用使用相同的权重
+实现共享层权重，每次调用使用相同的权重，
+可构建具有共享分支的模型
 """
 from keras import layers
 from keras import Input
