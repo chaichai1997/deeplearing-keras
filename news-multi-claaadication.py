@@ -46,6 +46,7 @@ def to_one_hot(labels, dimension=46):
 one_hot_train_label = to_one_hot(train_labels)  # one_hot_train_label = to_categorical(train_labels)
 one_hot_test_label = to_one_hot(test_labels)   # one_hot_test_label = to_categorical(test_labels)
 
+print(one_hot_test_label)
 
 # 验证集分割
 x_val = x_train[:1000]

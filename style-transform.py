@@ -12,6 +12,7 @@ import time
 target_image_path = 'E:\\deep learning\\code\\kreastest\\img\\content.jpg'
 # This is the path to the style image.
 style_reference_image_path = 'E:\\deep learning\\code\\kreastest\\img\\ref.jpg'
+style_reference_image_path = 'E:\\deep learning\\code\\kreastest\\img\\ref.jpg'
 
 # Dimensions of the generated picture.
 width, height = load_img(target_image_path).size

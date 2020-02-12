@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 from keras.datasets import boston_housing
 (train_data, train_labels), (test_data, test_labels) = \
     boston_housing.load_data()
-print(train_data.shape)
 
 
 """
@@ -75,7 +74,7 @@ for i in range(k):
         validation_data=[val_data, val_target],
         epochs=num_epochs,
         batch_size=1,
-        verbose=0
+        verbose=0,
     )
 
     mae_history = history.history['val_mean_absolute_error']
