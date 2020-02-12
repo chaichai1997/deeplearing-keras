@@ -24,8 +24,8 @@ x_test_noise = np.clip(x_test_noise, 0., 1)
 
 # building model
 model = Sequential()
-model.add(layers.Dense(500, activation='relu', input_shape=(28*28, )))
-model.add(layers.Dense(784, activation='sigmoid'))
+model.add(layers.Dense(500, activation='relu', input_shape=(28*28, )))  # encoder
+model.add(layers.Dense(784, activation='sigmoid'))    # decoder
 
 # compile
 model.compile(
