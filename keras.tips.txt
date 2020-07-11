@@ -1,0 +1,24 @@
+1. keras.layers
+	1.1 Permute 根据给定模式设置尺寸，常用于连接RNN与CNN
+		model.add(Permute((2, 1), input_shape=(10, 64)))
+		# now: model.output_shape == (None, 64, 10)
+	1.2 TimeDistributed
+		输入至少为3D，且索引的维数为1将被认为是时间维度
+	1.3 Lambda 将任意表达式封装为layer对象
+		model.add(layer.Lambda (lambda x: x **2)
+        添加一个x->x^2层
+2. models.Sequential 模型的各层之间依次是顺序的线性关系
+		model = models.Sequential()
+		model.add(layer.Dense(32, input = (784, ))
+		model.add
+		
+		model.compile()
+   models.Model 通用模型，可以设计复杂的拓扑结构
+		input = input
+		x = layer.Dense(32, input = (784, )
+		x = layer.Dense(32)(x)
+		model = models.Model(input=input, output=x)
+		
+		model.compile()
+
+	
